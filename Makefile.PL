@@ -1,0 +1,15 @@
+use strict;
+use inc::Module::Install;
+name 'Module-Install-CheckLib';
+author 'Chris Williams <chris@bingosnet.co.uk>';
+version_from 'lib/Module/Install/CheckLib.pm';
+abstract_from 'lib/Module/Install/CheckLib.pm';
+license 'perl';
+perl_version '5.006';
+build_requires 'Test::More' => 0.47;
+build_requires 'Capture::Tiny' => 0.05;
+requires 'Module::Install' => 0.85;
+requires 'Devel::CheckLib' => 0.5;
+eval "auto_set_repository";
+clean_files 'dist';
+WriteAll();
