@@ -6,7 +6,7 @@ use File::Spec;
 use base qw(Module::Install::Base);
 use vars qw($VERSION);
 
-$VERSION = '0.02';
+$VERSION = '0.04';
 
 sub checklibs {
   my $self = shift;
@@ -16,6 +16,20 @@ sub checklibs {
   unless ( $Module::Install::AUTHOR ) {
      require Devel::CheckLib;
      Devel::CheckLib::check_lib_or_exit( @parms );
+     return;
+  }
+
+  _author_side();
+}
+
+sub assertlibs {
+  my $self = shift;
+  my @parms = @_;
+  return unless scalar @parms;
+
+  unless ( $Module::Install::AUTHOR ) {
+     require Devel::CheckLib;
+     Devel::CheckLib::assert_lib( @parms );
      return;
   }
 
@@ -81,6 +95,14 @@ This plugin adds the following Module::Install command:
 Requires a list of parameters. These are passed directly to L<Devel::CheckLib> C<check_lib_or_exit> function.
 Please consult the documentation for L<Devel::CheckLib> for more details on what these parameters are.
 
+This is generally the function one should use in L<Makefile.PL>, as it exits gracefully and plays nice
+with CPAN Testers.
+
+=item C<assertlibs>
+
+The same as C<checklibs> but uses L<Devel::CheckLib> C<assert_lib> instead. C<assert_lib> dies instead
+of exiting gracefully. It is provided for completeness, please use C<checklibs>.
+
 =back
 
 =head1 AUTHOR
@@ -102,4 +124,3 @@ L<Module::Install>
 L<Devel::CheckLib>
 
 =cut
-

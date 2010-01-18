@@ -33,6 +33,14 @@ COMMANDS
         documentation for Devel::CheckLib for more details on what these
         parameters are.
 
+        This is generally the function one should use in Makefile.PL, as it
+        exits gracefully and plays nice with CPAN Testers.
+
+    "assertlibs"
+        The same as "checklibs" but uses Devel::CheckLib "assert_lib"
+        instead. "assert_lib" dies instead of exiting gracefully. It is
+        provided for completeness, please use "checklibs".
+
 AUTHOR
     Chris "BinGOs" Williams
 
