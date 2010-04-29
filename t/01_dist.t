@@ -1,13 +1,14 @@
 use strict;
 use warnings;
 use Test::More tests => 1;
+use File::Temp      qw[tempdir];
 use File::Path      qw[rmtree];
 use Capture::Tiny   qw[capture_merged];
 
-# Cleanup 
-eval { rmtree('dist') };
-mkdir 'dist' or die "$!\n";
-chdir 'dist' or die "$!\n";
+{
+mkdir 'dist';
+my $tmpdir = tempdir( DIR => 'dist', CLEANUP => 1 );
+chdir $tmpdir or die "$!\n";
 open MFPL, '>Makefile.PL' or die "$!\n";
 print MFPL <<EOF;
 use strict;
@@ -33,3 +34,4 @@ my @tests = (
 'inc/Devel/CheckLib.pm',
 );
 ok( -e $_, "Exists: '$_'" ) for @tests;
+}
