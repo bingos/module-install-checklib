@@ -10,49 +10,47 @@ $VERSION = '0.08';
 
 sub checklibs {
   my $self = shift;
-  my @parms = @_;
-  return unless scalar @parms;
-
-  unless ( $Module::Install::AUTHOR ) {
+  return unless scalar @_;
+  my %parms = @_;
+  unless (_author_side(delete $parms{run_checks_as_author})) {
      require Devel::CheckLib;
-     Devel::CheckLib::check_lib_or_exit( @parms );
+     Devel::CheckLib::check_lib_or_exit( %parms );
      return;
   }
-
-  _author_side();
 }
 
 sub assertlibs {
   my $self = shift;
-  my @parms = @_;
-  return unless scalar @parms;
-
-  unless ( $Module::Install::AUTHOR ) {
-     require Devel::CheckLib;
-     Devel::CheckLib::assert_lib( @parms );
-     return;
+  return unless scalar @_;
+  my %parms = @_;
+  unless (_author_side(delete $parms{run_checks_as_author})) {
+    require Devel::CheckLib;
+    Devel::CheckLib::assert_lib( %parms );
+    return;
   }
-
-  _author_side();
 }
 
 sub _author_side {
-  mkdir 'inc';
-  mkdir 'inc/Devel';
-  print "Extra directories created under inc/\n";
-  require Devel::CheckLib;
-  local $/ = undef;
-  open(CHECKLIBPM, $INC{'Devel/CheckLib.pm'}) ||
-    die("Can't read $INC{'Devel/CheckLib.pm'}: $!");
-  (my $checklibpm = <CHECKLIBPM>) =~ s/package Devel::CheckLib/package #\nDevel::CheckLib/;
-  close(CHECKLIBPM);
-  open(CHECKLIBPM, '>'.File::Spec->catfile(qw(inc Devel CheckLib.pm))) ||
-    die("Can't write inc/Devel/CheckLib.pm: $!");
-  print CHECKLIBPM $checklibpm;
-  close(CHECKLIBPM);
+  my $run_checks_as_author = shift;
+  if ($Module::Install::AUTHOR) {
+    mkdir 'inc';
+    mkdir 'inc/Devel';
+    print "Extra directories created under inc/\n";
+    require Devel::CheckLib;
+    local $/ = undef;
+    open(CHECKLIBPM, $INC{'Devel/CheckLib.pm'}) ||
+      die("Can't read $INC{'Devel/CheckLib.pm'}: $!");
+    (my $checklibpm = <CHECKLIBPM>) =~ s/package Devel::CheckLib/package #\nDevel::CheckLib/;
+    close(CHECKLIBPM);
+    open(CHECKLIBPM, '>'.File::Spec->catfile(qw(inc Devel CheckLib.pm))) ||
+      die("Can't write inc/Devel/CheckLib.pm: $!");
+    print CHECKLIBPM $checklibpm;
+    close(CHECKLIBPM);
 
-  print "Copied Devel::CheckLib to inc/ directory\n";
-  return 1;
+    print "Copied Devel::CheckLib to inc/ directory\n";
+    return !$run_checks_as_author;
+  }
+  return 0;
 }
 
 'All your libs are belong';
@@ -104,6 +102,14 @@ The same as C<checklibs> but uses L<Devel::CheckLib> C<assert_lib> instead. C<as
 of exiting gracefully. It is provided for completeness, please use C<checklibs>.
 
 =back
+
+By default, the module skips calls to Devel::CheckLibs subroutines when called from the author
+side. The extra option C<run_checks_as_author> can be given to both C<checklibs> and C<assertlibs>
+to enable those checks even in author mode.
+
+Example:
+
+  checklibs lib => libfoo, run_checks_as_author => 1;
 
 =head1 AUTHOR
 
