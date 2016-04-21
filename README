@@ -41,6 +41,15 @@ COMMANDS
         instead. "assert_lib" dies instead of exiting gracefully. It is
         provided for completeness, please use "checklibs".
 
+    By default, the module skips calls to Devel::CheckLibs subroutines when
+    called from the author side. The extra option "run_checks_as_author" can
+    be given to both "checklibs" and "assertlibs" to enable those checks
+    even in author mode.
+
+    Example:
+
+      checklibs lib => libfoo, run_checks_as_author => 1;
+
 AUTHOR
     Chris "BinGOs" Williams
 

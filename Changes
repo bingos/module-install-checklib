@@ -1,6 +1,13 @@
 Changelog for Module-Install-CheckLib
 =====================================
 
+0.10  Thu Apr 21 11:02:00 BST 2016
+  - Add support for run_checks_in_author_mode feature
+    contributed by Salva
+
+0.08  Wed Aug 25 15:00:00 BST 2010
+  - Update prereqs for Module::Install and Devel::CheckLib
+
 0.06  Thu Apr 29 13:07:43 BST 2010
   - tests runnable in parallel now, reported by
     Florian Ragwitz
