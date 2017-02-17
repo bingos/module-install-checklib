@@ -1,6 +1,9 @@
 Changelog for Module-Install-CheckLib
 =====================================
 
+0.12  Fri Feb 17 13:40:55 GMT 2017
+  - Handle perls without dot in @INC
+
 0.10  Thu Apr 21 11:02:00 BST 2016
   - Add support for run_checks_in_author_mode feature
     contributed by Salva
